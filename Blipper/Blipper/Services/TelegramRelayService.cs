@@ -18,8 +18,8 @@ namespace Blipper.Services
         private IConfiguration config;
 
         private static string GangChatId { get; set; } = "-400925924";
-        private static string GuysChatId { get; set; } = "-425506138";
-        private static string TestChatId { get; set; } = "-524662757";
+        private static string GuysChatId { get; set; } = "-1001230241352";
+        private static string TestChatId { get; set; } = "-1001411692326";
 
         public List<(long, DateTime)> Messages { get; set; } = new List<(long, DateTime)>();
 
