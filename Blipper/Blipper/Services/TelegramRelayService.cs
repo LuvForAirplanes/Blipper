@@ -64,21 +64,32 @@ namespace Blipper.Services
         {
             if (message.Length == 0)
                 return;
-            
+
             var type = message.Substring(0, 2).ToLower();
             message = message.Substring(2, message.Length - 2).Trim();
 
-            if (type == "e.")
-                await Bot.SendTextMessageAsync(GangChatId, message);
-            else if (type == "g.")
-                await Bot.SendTextMessageAsync(GuysChatId, message);
-            else if (type == "t.")
-                await Bot.SendTextMessageAsync(TestChatId, message);
-            else
+            var chatId = "";
+            switch (type)
             {
-                var lastMsg = Messages.OrderByDescending(m => m.Item2).FirstOrDefault();
-                await Bot.SendTextMessageAsync(lastMsg.Item1, type + message);
+                case "e.":
+                    chatId = GangChatId;
+                    break;
+                case "g.":
+                    chatId = GuysChatId;
+                    break;
+                case "t.":
+                    chatId = TestChatId;
+                    break;
+                default:
+                    var lastMsg = Messages.OrderByDescending(m => m.Item2).FirstOrDefault();
+                    await Bot.SendTextMessageAsync(lastMsg.Item1, type + message);
+                    break;
             }
+
+            if(!string.IsNullOrEmpty(chatId))
+                await Bot.SendTextMessageAsync(TestChatId, message);
+            
+            Messages.Add((long.Parse(chatId), DateTime.Now));
         }
 
         private void SendTwilioMessage(string message)
