@@ -30,7 +30,7 @@ namespace Blipper
                 {
                     webBuilder.ConfigureAppConfiguration(config =>
                     {
-                        config.AddJsonFile("appconfig.json");
+                        config.AddJsonFile("appconfig.json", true);
                     });
 
                     webBuilder.UseStartup<Startup>();

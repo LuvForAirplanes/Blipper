@@ -43,7 +43,7 @@ namespace Blipper.Services
         {
             var message = "";
 
-            if (e.Update.Type == UpdateType.Message && e.Update.Message.Text.Trim().Length > 0)
+            if (e.Update.Type == UpdateType.Message && e.Update.Message.Type == MessageType.Text && e.Update.Message.Text.Trim().Length > 0)
             {
                 message += e.Update.Message.Chat.Title + ": " +
                     e.Update.Message.From.FirstName + " " +
