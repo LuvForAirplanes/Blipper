@@ -17,9 +17,9 @@ namespace Blipper.Services
 
         private IConfiguration config;
 
-        private static string GangChatId { get; set; } = "-400925924";
-        private static string GuysChatId { get; set; } = "-1001230241352";
-        private static string TestChatId { get; set; } = "-1001411692326";
+        private static string GangChatId { get; set; }
+        private static string GuysChatId { get; set; }
+        private static string TestChatId { get; set; }
 
         public List<(long, DateTime)> Messages { get; set; } = new List<(long, DateTime)>();
 
@@ -35,6 +35,10 @@ namespace Blipper.Services
             Bot = new TelegramBotClient(botId);
             Bot.StartReceiving(new UpdateType[] { UpdateType.Message });
             Bot.OnUpdate += (s, a) => NewTelegramMessageEvent(a);
+
+            GangChatId = config.GetValue<string>("Chats:Gang");
+            GuysChatId = config.GetValue<string>("Chats:Guys");
+            TestChatId = config.GetValue<string>("Chats:Test");
 
             TwilioClient.Init(config.GetValue<string>("TwilioConfig:AccountSID"), config.GetValue<string>("TwilioConfig:AuthToken"));
         }
@@ -66,9 +70,9 @@ namespace Blipper.Services
 
             if (type == "e.")
                 await Bot.SendTextMessageAsync(GangChatId, message);
-            if (type == "g.")
+            else if (type == "g.")
                 await Bot.SendTextMessageAsync(GuysChatId, message);
-            if (type == "t.")
+            else if (type == "t.")
                 await Bot.SendTextMessageAsync(TestChatId, message);
             else
             {
