@@ -17,10 +17,11 @@ namespace Blipper.Services
 
         private IConfiguration config;
 
-        //
-        private static string GangChatId { get; set; } = "-524662757";
-        //
-        private static string GuysChatId { get; set; } = "-524662757";
+        private static string GangChatId { get; set; } = "-400925924";
+        private static string GuysChatId { get; set; } = "-425506138";
+        private static string TestChatId { get; set; } = "-524662757";
+
+        public List<(long, DateTime)> Messages { get; set; } = new List<(long, DateTime)>();
 
         public TelegramRelayService(IConfiguration config)
         {
@@ -48,6 +49,8 @@ namespace Blipper.Services
                     e.Update.Message.From.LastName.Substring(0, 1) + ": " +
                     e.Update.Message.Text;
 
+            Messages.Add((e.Update.Message.Chat.Id, DateTime.Now));
+
             SendTwilioMessage(message);
         }
 
@@ -56,11 +59,20 @@ namespace Blipper.Services
             if (message.Length == 0)
                 return;
             
-            var type = message.Substring(0, 1).ToLower();
-            if (type == "e")
-                await Bot.SendTextMessageAsync(GangChatId, message.Substring(1, message.Length - 1));
-            if (type == "g")
-                await Bot.SendTextMessageAsync(GuysChatId, message.Substring(1, message.Length - 1));
+            var type = message.Substring(0, 2).ToLower();
+            message = message.Substring(2, message.Length - 1).Trim();
+
+            if (type == "e.")
+                await Bot.SendTextMessageAsync(GangChatId, message);
+            if (type == "g.")
+                await Bot.SendTextMessageAsync(GuysChatId, message);
+            if (type == "t.")
+                await Bot.SendTextMessageAsync(TestChatId, message);
+            else
+            {
+                var lastMsg = Messages.OrderBy(m => m.Item2).FirstOrDefault();
+                await Bot.SendTextMessageAsync(lastMsg.Item1, message);
+            }
         }
 
         private void SendTwilioMessage(string message)

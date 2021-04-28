@@ -28,6 +28,11 @@ namespace Blipper
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration(config =>
+                    {
+                        config.AddJsonFile("appconfig.json");
+                    });
+
                     webBuilder.UseStartup<Startup>();
                 });
     }
