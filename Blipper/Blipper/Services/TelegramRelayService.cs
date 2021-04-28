@@ -62,7 +62,7 @@ namespace Blipper.Services
                 return;
             
             var type = message.Substring(0, 2).ToLower();
-            message = message.Substring(2, message.Length - 1).Trim();
+            message = message.Substring(2, message.Length - 2).Trim();
 
             if (type == "e.")
                 await Bot.SendTextMessageAsync(GangChatId, message);
