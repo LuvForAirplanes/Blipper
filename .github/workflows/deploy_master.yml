@@ -1,0 +1,50 @@
+name: Build and Deploy Master
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: |
+        cd ./Blipper
+        dotnet restore
+    - name: Build
+      run:  |
+        cd ./Blipper
+        dotnet build --no-restore
+    - name: Test
+      run:   |
+        cd ./Blipper
+        dotnet test --no-build --verbosity normal
+    - name: Build Linux
+      run:  |
+        cd ./Blipper
+        dotnet publish -c Release --self-contained true --runtime linux-x64 --framework net5.0 /p:useapphost=true
+    - name: Copy Files to Develop
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: ./Blipper/Blipper/bin/Release/net5.0/linux-x64/publish
+        remote: /home/deploy/blipper/master/staging
+        host: mdosupply.hosting.olivetree.cloud
+        username: deploy
+        port: 22509
+        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Call deploy.sh on Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: mdosupply.hosting.olivetree.cloud
+        port: 22509
+        username: deploy
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: "sudo /var/aspnetcore/blipper/master/deploy.sh"
