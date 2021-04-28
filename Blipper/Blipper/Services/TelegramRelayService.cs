@@ -73,7 +73,7 @@ namespace Blipper.Services
             else
             {
                 var lastMsg = Messages.OrderBy(m => m.Item2).FirstOrDefault();
-                await Bot.SendTextMessageAsync(lastMsg.Item1, message);
+                await Bot.SendTextMessageAsync(lastMsg.Item1, type + message);
             }
         }
 
