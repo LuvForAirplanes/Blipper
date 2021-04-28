@@ -43,15 +43,17 @@ namespace Blipper.Services
         {
             var message = "";
 
-            if(e.Update.Type == UpdateType.Message)
+            if (e.Update.Type == UpdateType.Message && e.Update.Message.Text.Trim().Length > 0)
+            {
                 message += e.Update.Message.Chat.Title + ": " +
                     e.Update.Message.From.FirstName + " " +
                     e.Update.Message.From.LastName.Substring(0, 1) + ": " +
                     e.Update.Message.Text;
 
-            Messages.Add((e.Update.Message.Chat.Id, DateTime.Now));
+                Messages.Add((e.Update.Message.Chat.Id, DateTime.Now));
 
-            SendTwilioMessage(message);
+                SendTwilioMessage(message);
+            }
         }
 
         public async Task IncomingSMSMessageAsync(string message)
