@@ -46,8 +46,8 @@ namespace Blipper.Services
             if (e.Update.Type == UpdateType.Message && e.Update.Message.Type == MessageType.Text && e.Update.Message.Text.Trim().Length > 0)
             {
                 message += e.Update.Message.Chat.Title + ": " +
-                    e.Update.Message.From.FirstName + " " +
-                    e.Update.Message.From.LastName.Substring(0, 1) + ": " +
+                    e.Update.Message.From.FirstName +
+                    (e.Update.Message.From.LastName != null ? " " + e.Update.Message.From.LastName.Substring(0, 1) : "") + ": " +
                     e.Update.Message.Text;
 
                 Messages.Add((e.Update.Message.Chat.Id, DateTime.Now));
