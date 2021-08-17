@@ -15,31 +15,20 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: |
-        cd ./Blipper
-        dotnet restore
-    - name: Build
-      run:  |
-        cd ./Blipper
-        dotnet build --no-restore
-    - name: Test
-      run:   |
-        cd ./Blipper
-        dotnet test --no-build --verbosity normal
     - name: Build Linux
       run:  |
         cd ./Blipper
         dotnet publish -c Release --self-contained true --runtime linux-x64 --framework net5.0 /p:useapphost=true
     - name: Copy Files to Develop
-      uses: garygrossgarten/github-action-scp@release
+      uses: burnett01/rsync-deployments@4.1
       with:
-        local: ./Blipper/Blipper/bin/Release/net5.0/linux-x64/publish
-        remote: /home/deploy/blipper/master/staging
-        host: mdosupply.hosting.olivetree.cloud
-        username: deploy
-        port: 22509
-        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+        switches: -avzr --delete
+        path: ./Blipper/Blipper/bin/Release/net5.0/linux-x64/publish/*
+        remote_path: /home/deploy/blipper/master/staging
+        remote_host: ${{ secrets.DEPLOY_SERVER }}
+        remote_user: deploy
+        remote_port: 22509
+        remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
     - name: Call deploy.sh on Server
       uses: appleboy/ssh-action@master
       with:
