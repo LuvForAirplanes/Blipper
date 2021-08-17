@@ -88,7 +88,7 @@ namespace Blipper.Services
 
             if(!string.IsNullOrEmpty(chatId))
                 await Bot.SendTextMessageAsync(chatId, message);
-            
+            Console.WriteLine(chatId);
             Messages.Add((long.Parse(chatId), DateTime.Now));
         }
 
